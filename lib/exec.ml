@@ -73,11 +73,8 @@ let is_git_repo_clean ~repo () =
   match OS.Cmd.(run_out ~err:err_log cmd |> to_string) with Ok _ -> Ok true | Error _ -> Ok false
 
 let git_archive ~output_dir ~remote ~tag () =
-  OS.Dir.delete ~recurse:true output_dir >>= fun () ->
   let cmd = Cmd.(v "git" % "clone" % "--depth=1" % "-b" % tag % remote % p output_dir) in
-  run_and_log cmd >>= fun () ->
-  OS.Dir.delete ~must_exist:true ~recurse:true Fpath.(output_dir / ".git") >>= fun () ->
-  OS.Dir.delete ~recurse:true Fpath.(output_dir // Config.vendor_dir)
+  run_and_log cmd >>= fun () -> OS.Dir.delete ~recurse:true Fpath.(output_dir // Config.vendor_dir)
 
 let git_default_branch ~remote () =
   let cmd = Cmd.(v "git" % "remote" % "show" % remote) in
@@ -177,3 +174,27 @@ let run_opam_install ~yes opam_deps =
       opam_deps
   in
   OS.Cmd.run Cmd.(v "opam" % "install" %% on yes (v "-y") %% of_list packages)
+
+let copy_dir ~from ~into = run_and_log Cmd.(v "cp" % "-r" % p from % p into)
+
+let git_remote_add ~remote_url ~remote_name =
+  run_and_log Cmd.(v "git" % "remote" % "add" % remote_name % remote_url)
+
+let git_remote_remove ~remote_name = run_and_log Cmd.(v "git" % "remote" % "remove" % remote_name)
+
+let git_fetch_to ~remote_name ~tag ~branch =
+  run_and_log Cmd.(v "git" % "fetch" % "--depth" % "1" % remote_name % tag) >>= fun () ->
+  run_and_log Cmd.(v "git" % "checkout" % "FETCH_HEAD") >>= fun () ->
+  run_and_log Cmd.(v "git" % "checkout" % "-b" % branch)
+
+let git_init output_dir = run_and_log Cmd.(v "git" % "init" % p output_dir)
+
+let git_clone ~branch ~remote ~output_dir =
+  run_and_log
+    Cmd.(v "git" % "clone" % "--depth" % "1" % "--branch" % branch % remote % p output_dir)
+
+let git_rename_current_branch_to ~branch = run_and_log Cmd.(v "git" % "branch" % "-m" % branch)
+
+let git_remotes dir =
+  let cmd = Cmd.(v "git" % "-C" % p dir % "remote") in
+  run_and_log_l cmd >>| fun remotes -> String.Set.of_list remotes
