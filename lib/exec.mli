@@ -13,7 +13,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  *)
-open Astring
 
 val map : ('a -> ('b, 'c) result) -> 'a list -> ('b list, 'c) result
 
@@ -22,11 +21,6 @@ val iter : ('a -> (unit, 'b) result) -> 'a list -> (unit, 'b) result
 val git_default_branch : remote:string -> unit -> (string, [> Rresult.R.msg ]) result
 (** Return the default branch for the given remote name by running git remote show [remote] and
     parsing the output looking for HEAD branch: <branch_name> *)
-
-val git_archive :
-  output_dir:Fpath.t -> remote:string -> tag:string -> unit -> (unit, [> Rresult.R.msg ]) result
-(** [git_archive ~output_dir ~remote ~tag] clones the repo from [remote] into [output_dir],
-    checks it out to [tag] and removes its .git and duniverse directories. *)
 
 val git_add_and_commit :
   repo:Fpath.t -> message:string -> Bos.Cmd.t -> (unit, [> Rresult.R.msg ]) result
@@ -80,8 +74,6 @@ val run_opam_install : yes:bool -> Duniverse.Deps.Opam.t list -> (unit, [> Rresu
 (** [run_opam_install ~yes packages] launch an opam command to install the given packages. If yes is
     set to true, it doesn't prompt the user for confirmation. *)
 
-val copy_dir : from:Fpath.t -> into:Fpath.t -> (unit, [> Rresult.R.msg ]) result
-
 val git_remote_add : remote_url:string -> remote_name:string -> (unit, [> Rresult.R.msg ]) result
 (** Uses git remote add in the current working directory **)
 
@@ -102,5 +94,5 @@ val git_clone :
 val git_rename_current_branch_to : branch:string -> (unit, [> Rresult.R.msg ]) result
 (** [git_rename_current_branch_to ~branch] Sets current working directory's branch name to branch. **)
 
-val git_remotes : Fpath.t -> (String.Set.t, [> Rresult.R.msg ]) result
+val git_remotes : Fpath.t -> (string list, [> Rresult.R.msg ]) result
 (** [git_remotes path] List remotes of the git project located in path. **)
