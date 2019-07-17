@@ -11,3 +11,5 @@ val path : Fpath.t Fmt.t
 val good : 'a Fmt.t -> 'a Fmt.t
 
 val bad : 'a Fmt.t -> 'a Fmt.t
+
+val cached : unit Fmt.t

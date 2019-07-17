@@ -1,5 +1,6 @@
 open Stdune
 open Duniverse_lib
+open Rresult
 
 let min_dune_ver = Dune_file.Lang.duniverse_minimum_version
 
@@ -67,8 +68,10 @@ let pull_source_dependencies ~duniverse_dir src_deps =
   Exec.iter
     (fun { Duniverse.Deps.Source.dir; upstream; ref; _ } ->
       let output_dir = Fpath.(duniverse_dir / dir) in
-      Common.Logs.app (fun l -> l "Pulling sources for %a." Styled_pp.path output_dir);
-      Cache.git_get ~output_dir ~remote:upstream ~tag:ref ())
+      Cache.git_get ~output_dir ~remote:upstream ~tag:ref () >>| function
+      | false -> Common.Logs.app (fun l -> l "Pulled sources for %a." Styled_pp.path output_dir)
+      | true -> Common.Logs.app (fun l -> l "Pulled sources for %a. %a" Styled_pp.path output_dir Styled_pp.cached ()))
+
     src_deps
 
 let run yes repo () =
