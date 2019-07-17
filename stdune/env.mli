@@ -1,5 +1,6 @@
 module Var : sig
   type t = string
+
   val compare : t -> t -> Ordering.t
 
   module Set : Set.S with type elt = t
@@ -13,8 +14,8 @@ val empty : t
 
 val vars : t -> Var.Set.t
 
-(** The environment when the process started *)
 val initial : t
+(** The environment when the process started *)
 
 val to_unix : t -> string array
 

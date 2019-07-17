@@ -16,32 +16,45 @@ type t = Dyn0.t =
   | Map of (t * t) list
   | Set of t list
 
-module Encoder : sig
-  type dyn
+module Encoder :
+  sig
+    type dyn
 
-  type 'a t = 'a -> dyn
+    type 'a t = 'a -> dyn
 
-  val unit       : unit                      t
-  val char       : char                      t
-  val string     : string                    t
-  val int        : int                       t
-  val float      : float                     t
-  val bool       : bool                      t
-  val pair       : 'a t -> 'b t -> ('a * 'b) t
-  val triple     : 'a t -> 'b t -> 'c t -> ('a * 'b * 'c) t
-  val list       : 'a t -> 'a list           t
-  val array      : 'a t -> 'a array          t
-  val option     : 'a t -> 'a option         t
+    val unit : unit t
 
-  val via_sexp : ('a -> Sexp0.t) -> 'a t
+    val char : char t
 
-  val record : (string * dyn) list -> dyn
+    val string : string t
 
-  val unknown : _ t
-  val opaque : _ t
+    val int : int t
 
-  val constr : string -> dyn list -> dyn
-end with type dyn := t
+    val float : float t
+
+    val bool : bool t
+
+    val pair : 'a t -> 'b t -> ('a * 'b) t
+
+    val triple : 'a t -> 'b t -> 'c t -> ('a * 'b * 'c) t
+
+    val list : 'a t -> 'a list t
+
+    val array : 'a t -> 'a array t
+
+    val option : 'a t -> 'a option t
+
+    val via_sexp : ('a -> Sexp0.t) -> 'a t
+
+    val record : (string * dyn) list -> dyn
+
+    val unknown : _ t
+
+    val opaque : _ t
+
+    val constr : string -> dyn list -> dyn
+  end
+  with type dyn := t
 
 val pp : Format.formatter -> t -> unit
 

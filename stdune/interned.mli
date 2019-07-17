@@ -2,21 +2,27 @@
 
 module type S = sig
   type t
+
   val hash : t -> int
+
   val equal : t -> t -> bool
+
   val compare : t -> t -> Ordering.t
+
   val to_dyn : t -> Dyn.t
+
   val to_string : t -> string
+
   val pp : t Fmt.t
 
   val make : string -> t
 
+  val get : string -> t option
   (** Like [make] except it returns [None] if the string hasn't been
       registered with [make] previously. *)
-  val get : string -> t option
 
-  (** Return the list of all existing [t]s. *)
   val all : unit -> t list
+  (** Return the list of all existing [t]s. *)
 
   module Set : sig
     include Set.S with type elt = t
@@ -32,15 +38,19 @@ module type S = sig
 
   (** Same as a hash table, but optimized for the case where we are
       using one entry for every possible [t] *)
-  module Table : sig
-    type key = t
-    type 'a t
+  module Table :
+    sig
+      type key = t
 
-    val create : default_value:'a -> 'a t
+      type 'a t
 
-    val get : 'a t -> key -> 'a
-    val set : 'a t -> key:key -> data:'a -> unit
-  end with type key := t
+      val create : default_value:'a -> 'a t
+
+      val get : 'a t -> key -> 'a
+
+      val set : 'a t -> key:key -> data:'a -> unit
+    end
+    with type key := t
 end
 
 type resize_policy = Conservative | Greedy
@@ -49,10 +59,12 @@ type order = Natural | Fast
 
 module type Settings = sig
   val initial_size : int
+
   val resize_policy : resize_policy
+
   val order : order
 end
 
-module Make(R : Settings)() : S
+module Make (R : Settings) () : S
 
-module No_interning(R : Settings)() : S
+module No_interning (R : Settings) () : S

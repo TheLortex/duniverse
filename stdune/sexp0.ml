@@ -1,3 +1,1 @@
-type t =
-  | Atom of string
-  | List of t list
+type t = Atom of string | List of t list

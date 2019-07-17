@@ -70,8 +70,9 @@ let pull_source_dependencies ~duniverse_dir src_deps =
       let output_dir = Fpath.(duniverse_dir / dir) in
       Cache.git_get ~output_dir ~remote:upstream ~tag:ref () >>| function
       | false -> Common.Logs.app (fun l -> l "Pulled sources for %a." Styled_pp.path output_dir)
-      | true -> Common.Logs.app (fun l -> l "Pulled sources for %a. %a" Styled_pp.path output_dir Styled_pp.cached ()))
-
+      | true ->
+          Common.Logs.app (fun l ->
+              l "Pulled sources for %a. %a" Styled_pp.path output_dir Styled_pp.cached () ) )
     src_deps
 
 let run yes repo () =

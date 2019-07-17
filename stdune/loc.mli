@@ -1,4 +1,6 @@
-include module type of struct include Loc0 end
+include module type of struct
+    include Loc0
+end
 
 val in_file : Path.t -> t
 
@@ -20,19 +22,16 @@ val sexp_of_position_no_file : Lexing.position -> Sexp.t
 
 val equal : t -> t -> bool
 
+val of_pos : string * int * int * int -> t
 (** To be used with [__POS__] *)
-val of_pos : (string * int * int * int) -> t
 
 val to_file_colon_line : t -> string
+
 val pp_file_colon_line : Format.formatter -> t -> unit
 
 val print : Format.formatter -> t -> unit
 
-val pp_file_excerpt
-  : context_lines:int
-  -> max_lines_to_print_in_full:int
-  -> Format.formatter
-  -> t
-  -> unit
+val pp_file_excerpt :
+  context_lines:int -> max_lines_to_print_in_full:int -> Format.formatter -> t -> unit
 
 val on_same_line : t -> t -> bool

@@ -1,7 +1,6 @@
 type t = string
 
 module D = Dune_caml.Digest
-
 module Set = String.Set
 
 let file p = D.file (Path.to_string p)
